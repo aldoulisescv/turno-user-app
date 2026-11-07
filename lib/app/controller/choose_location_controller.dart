@@ -120,7 +120,16 @@ class ChooseLocationController extends GetxController implements GetxService {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-    return await Geolocator.getCurrentPosition();
+    // gen3 local: ver find_location_controller (permiso aproximado en Android reciente).
+    try {
+      return await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.low,
+          timeLimit: const Duration(seconds: 10));
+    } catch (_) {
+      final last = await Geolocator.getLastKnownPosition();
+      if (last != null) return last;
+      rethrow;
+    }
   }
 
   void saveLanguage(String code) {

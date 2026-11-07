@@ -11,6 +11,6 @@ class Environments {
   static const String companyName = 'Initappz';
   static const String googleMapsKey = 'your-google-maps-key';
   static const String apiBaseURL =
-      'https://your-api-url.com/public/';
+      'http://localhost:8094/'; // gen3 local: vía adb reverse tcp:8094
   static const String websiteURL = 'https://your-website-url.com/';
 }

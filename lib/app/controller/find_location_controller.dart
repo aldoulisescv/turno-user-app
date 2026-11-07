@@ -126,7 +126,17 @@ class FindLocationController extends GetxController implements GetxService {
           'Location permissions are permanently denied, we cannot request permissions.'
               .tr);
     }
-    return await Geolocator.getCurrentPosition();
+    // gen3 local: con permiso aproximado, getCurrentPosition() (precisión alta) nunca responde en
+    // Android reciente; se pide precisión baja con límite de tiempo y se cae a la última conocida.
+    try {
+      return await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.low,
+          timeLimit: const Duration(seconds: 10));
+    } catch (_) {
+      final last = await Geolocator.getLastKnownPosition();
+      if (last != null) return last;
+      rethrow;
+    }
   }
 
   void onMapCreated(GoogleMapController controller) {
